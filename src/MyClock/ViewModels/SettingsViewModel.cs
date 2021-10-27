@@ -120,6 +120,12 @@ namespace MyClock.ViewModels
 
         private void Apply()
         {
-        } 
+            this.settings.BackgroundColor = this.BackgroundColor;
+            this.settings.BackgroundOpacity = this.BackgroundOpacity;
+            this.settings.FontColor = this.FontColor;
+            this.settings.FontFamily = this.SelectedFontFamily;
+            this.settings.Save();
+            this.clock.Draw();
+        }
     }
 }

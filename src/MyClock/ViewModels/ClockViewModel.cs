@@ -20,9 +20,7 @@ namespace MyClock.ViewModels
         public ClockViewModel(ISettings appSettings)
         {
             this.settings = appSettings;
-            this.BackgroundColor = this.settings.GetBackgroundColorBrush();
-            this.FontColor = this.settings.GetFontColorBrush();
-            this.FontFamily = this.settings.FontFamily;
+            this.Draw();
 
             this.ShowSettingsCommand = new RelayCommand(obj =>
             {
@@ -91,6 +89,13 @@ namespace MyClock.ViewModels
                 this.fontFamily = value;
                 this.NotifyPropertyChanged(nameof(this.FontFamily));
             }
+        }
+
+        public void Draw()
+        {
+            this.BackgroundColor = this.settings.GetBackgroundColorBrush();
+            this.FontColor = this.settings.GetFontColorBrush();
+            this.FontFamily = this.settings.FontFamily;
         }
 
         private void HandleTimerTick(object sender, EventArgs e)
