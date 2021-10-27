@@ -10,26 +10,29 @@
         WindowStyle="None"
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip"
-        Background="{StaticResource Gray111Brush}"
+        Background="{Binding BackgroundColor}"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontFamily" Value="{Binding FontFamily}" />
+            <Setter Property="Foreground" Value="{Binding FontColor}" />
             <Setter Property="Padding" Value="5, 0, 5, 0" />
         </Style>
     </Window.Resources>
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Show Date" Command="{Binding ToggleDateCommand}" IsCheckable="True" IsChecked="True" />
+            <MenuItem Header="Settings" Command="{Binding ShowSettingsCommand}" />
+            <Separator />
+            <MenuItem Header="Toggle Date" Command="{Binding ToggleDateCommand}" />
             <Separator />
             <MenuItem Header="Close" Command="{Binding CloseCommand}" />
         </ContextMenu>
     </Window.ContextMenu>
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Viewbox>
-            <TextBlock Text="{Binding Path=Date, StringFormat={}{0:M/d/yyyy}}" Visibility="{Binding ShowDateVisibility}" />
+            <TextBlock Text="{Binding Path=Date, StringFormat={}{0:M/d/yyyy}}" Visibility="{Binding DateVisibility}" />
         </Viewbox>
         <Viewbox>
             <TextBlock Text="{Binding Path=Date, StringFormat={}{0:h:mm tt}}" />
