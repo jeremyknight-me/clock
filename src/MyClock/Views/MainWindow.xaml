@@ -1,0 +1,35 @@
+﻿<Window x:Class="MyClock.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyClock.Views"
+        mc:Ignorable="d"
+        Title="MyClock" 
+        Height="200" Width="300" 
+        WindowStyle="ToolWindow"
+        Background="{StaticResource Gray111Brush}">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Padding" Value="5, 0, 5, 0" />
+        </Style>
+    </Window.Resources>
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Show Date" Command="{Binding ToggleDateCommand}" IsCheckable="True" IsChecked="True" />
+            <Separator />
+            <MenuItem Header="Close" Command="{Binding CloseCommand}" />
+        </ContextMenu>
+    </Window.ContextMenu>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Viewbox>
+            <TextBlock Text="{Binding Path=Date, StringFormat={}{0:M/d/yyyy}}" Visibility="{Binding ShowDateVisibility}" />
+        </Viewbox>
+        <Viewbox>
+            <TextBlock Text="{Binding Path=Date, StringFormat={}{0:h:mm tt}}" />
+        </Viewbox>
+    </StackPanel>
+</Window>
