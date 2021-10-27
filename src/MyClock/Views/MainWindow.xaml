@@ -7,8 +7,11 @@
         mc:Ignorable="d"
         Title="MyClock" 
         Height="200" Width="300" 
-        WindowStyle="ToolWindow"
-        Background="{StaticResource Gray111Brush}">
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip"
+        Background="{StaticResource Gray111Brush}"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="HorizontalAlignment" Value="Center" />

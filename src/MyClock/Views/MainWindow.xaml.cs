@@ -12,5 +12,10 @@ namespace MyClock.Views
         }
 
         internal ClockViewModel ViewModel => this.DataContext as ClockViewModel;
+
+        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }
