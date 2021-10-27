@@ -1,33 +1,55 @@
 ﻿using MyClock.Commands;
 using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace MyClock.ViewModels
 {
-    public class ClockViewModel : INotifyPropertyChanged
+    public class ClockViewModel : ViewModelBase
     {
+        private readonly ISettings settings;
+
+        private SolidColorBrush backgroundColor; 
         private DateTime date;
-        private Visibility showDateVisibility;
+        private SolidColorBrush fontColor;
+        private FontFamily fontFamily;
         private DispatcherTimer timer;
 
-        public ClockViewModel()
+        public ClockViewModel(ISettings appSettings)
         {
-            this.date = DateTime.Now.ToLocalTime();
+            this.settings = appSettings;
+            this.Draw();
+
+            this.ShowSettingsCommand = new RelayCommand(obj =>
+            {
+                var viewModel = new SettingsViewModel(this.settings, this);
+                var window = new Views.SettingsWindow(viewModel);
+                window.ShowDialog();
+            });
             this.ToggleDateCommand = new RelayCommand(obj => this.ToggleDateVisibility());
 
+            this.date = DateTime.Now.ToLocalTime();
             var seconds = 5;
             this.timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, seconds) };
             this.timer.Tick += HandleTimerTick;
             this.timer.Start();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public ICommand CloseCommand { get; private set; } = new ShutdownCommand();
+        public ICommand ShowSettingsCommand { get; private set; }
         public ICommand ToggleDateCommand { get; private set; }
+
+        public SolidColorBrush BackgroundColor
+        {
+            get => this.backgroundColor;
+            set
+            {
+                this.backgroundColor = value;
+                this.NotifyPropertyChanged(nameof(this.BackgroundColor));
+            }
+        }
 
         public DateTime Date
         {
@@ -39,14 +61,41 @@ namespace MyClock.ViewModels
             }
         }
 
-        public Visibility ShowDateVisibility
+        public Visibility DateVisibility
         {
-            get => this.showDateVisibility;
+            get => this.settings.DateVisibility;
             set
             {
-                this.showDateVisibility = value;
-                this.NotifyPropertyChanged(nameof(this.ShowDateVisibility));
+                this.settings.DateVisibility = value;
+                this.NotifyPropertyChanged(nameof(this.DateVisibility));
             }
+        }
+
+        public SolidColorBrush FontColor
+        {
+            get => this.fontColor;
+            set
+            {
+                this.fontColor = value;
+                this.NotifyPropertyChanged(nameof(this.FontColor));
+            }
+        }
+
+        public FontFamily FontFamily
+        {
+            get => this.fontFamily;
+            set
+            {
+                this.fontFamily = value;
+                this.NotifyPropertyChanged(nameof(this.FontFamily));
+            }
+        }
+
+        public void Draw()
+        {
+            this.BackgroundColor = this.settings.GetBackgroundColorBrush();
+            this.FontColor = this.settings.GetFontColorBrush();
+            this.FontFamily = this.settings.FontFamily;
         }
 
         private void HandleTimerTick(object sender, EventArgs e)
@@ -56,24 +105,16 @@ namespace MyClock.ViewModels
 
         private void ToggleDateVisibility()
         {
-            switch (this.ShowDateVisibility)
+            switch (this.DateVisibility)
             {
                 case Visibility.Visible:
-                    this.ShowDateVisibility = Visibility.Collapsed;
+                    this.DateVisibility = Visibility.Collapsed;
                     break;
                 //case Visibility.Hidden:
                 //case Visibility.Collapsed:
                 default:
-                    this.ShowDateVisibility = Visibility.Visible;
+                    this.DateVisibility = Visibility.Visible;
                     break;
-            }
-        }
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
