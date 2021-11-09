@@ -1,21 +1,19 @@
 ﻿using MyClock.ViewModels;
-using System.Windows;
 
-namespace MyClock.Views
+namespace MyClock.Views;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    public MainWindow(ClockViewModel viewModel)
     {
-        public MainWindow(ClockViewModel viewModel)
-        {
-            this.DataContext = viewModel;
-            InitializeComponent();
-        }
+        this.DataContext = viewModel;
+        InitializeComponent();
+    }
 
-        internal ClockViewModel ViewModel => this.DataContext as ClockViewModel;
+    internal ClockViewModel ViewModel => this.DataContext as ClockViewModel;
 
-        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            this.DragMove();
-        }
+    private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        this.DragMove();
     }
 }

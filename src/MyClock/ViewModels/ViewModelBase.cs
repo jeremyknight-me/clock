@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel;
 
-namespace MyClock.ViewModels
-{
-    public abstract class ViewModelBase : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+namespace MyClock.ViewModels;
 
-        protected void NotifyPropertyChanged(string propertyName)
+public abstract class ViewModelBase : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void NotifyPropertyChanged(string propertyName)
+    {
+        if (this.PropertyChanged != null)
         {
-            if (this.PropertyChanged != null)
-            {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

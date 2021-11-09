@@ -1,21 +1,18 @@
 ﻿using MyClock.ViewModels;
-using System;
-using System.Windows;
 
-namespace MyClock.Views
+namespace MyClock.Views;
+
+public partial class SettingsWindow : Window
 {
-    public partial class SettingsWindow : Window
+    public SettingsWindow(SettingsViewModel viewModel)
     {
-        public SettingsWindow(SettingsViewModel viewModel)
+        if (viewModel.CloseAction is null)
         {
-            if (viewModel.CloseAction is null)
-            {
-                viewModel.CloseAction = new Action(this.Close);
-            }
-            this.DataContext = viewModel;
-            InitializeComponent();
+            viewModel.CloseAction = new Action(this.Close);
         }
-
-        internal SettingsViewModel ViewModel => this.DataContext as SettingsViewModel;
+        this.DataContext = viewModel;
+        InitializeComponent();
     }
+
+    internal SettingsViewModel ViewModel => this.DataContext as SettingsViewModel;
 }
