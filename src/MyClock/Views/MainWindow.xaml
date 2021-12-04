@@ -11,6 +11,7 @@
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip"
         Background="{Binding BackgroundColor}"
+        Closed="Window_Closed"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
     <Window.Resources>
         <Style TargetType="{x:Type TextBlock}">

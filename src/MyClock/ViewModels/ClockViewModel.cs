@@ -5,10 +5,8 @@ using System.Windows.Threading;
 
 namespace MyClock.ViewModels;
 
-public class ClockViewModel : ViewModelBase
+public class ClockViewModel : ViewModelBase, IDisposable
 {
-    private readonly ISettings settings;
-
     private SolidColorBrush backgroundColor;
     private DateTime date;
     private SolidColorBrush fontColor;
@@ -17,33 +15,20 @@ public class ClockViewModel : ViewModelBase
 
     public ClockViewModel(ISettings appSettings)
     {
-        this.settings = appSettings;
+        this.Settings = appSettings;
+        this.ShowSettingsCommand = new ShowSettingsCommand(this);
+        this.ToggleDateCommand = new ToggleDateCommand(this);
         this.Draw();
 
-        this.ShowSettingsCommand = new RelayCommand(obj =>
-        {
-            var viewModel = new SettingsViewModel(this.settings, this);
-            var window = new Views.SettingsWindow(viewModel);
-            window.ShowDialog();
-        });
-        this.ToggleDateCommand = new RelayCommand(obj => this.ToggleDateVisibility());
-
         this.date = DateTime.Now.ToLocalTime();
-        var seconds = 5;
-        this.timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, seconds) };
-        this.timer.Tick += HandleTimerTick;
+        this.timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+        this.timer.Tick += (object sender, EventArgs e) => this.Date = DateTime.Now.ToLocalTime();
         this.timer.Start();
     }
 
-    public ICommand CloseCommand { get; private set; } = new ShutdownCommand();
-    public ICommand ShowSettingsCommand
-    {
-        get; private set;
-    }
-    public ICommand ToggleDateCommand
-    {
-        get; private set;
-    }
+    public ICommand CloseCommand { get; } = new ShutdownCommand();
+    public ICommand ShowSettingsCommand { get; }
+    public ICommand ToggleDateCommand { get; }
 
     public SolidColorBrush BackgroundColor
     {
@@ -67,10 +52,10 @@ public class ClockViewModel : ViewModelBase
 
     public Visibility DateVisibility
     {
-        get => this.settings.DateVisibility;
+        get => this.Settings.DateVisibility;
         set
         {
-            this.settings.DateVisibility = value;
+            this.Settings.DateVisibility = value;
             this.NotifyPropertyChanged(nameof(this.DateVisibility));
         }
     }
@@ -95,30 +80,18 @@ public class ClockViewModel : ViewModelBase
         }
     }
 
+    public ISettings Settings { get; }
+
+    public void Dispose()
+    {
+        this.timer.Stop();
+        this.timer = null;
+    }
+
     public void Draw()
     {
-        this.BackgroundColor = this.settings.GetBackgroundColorBrush();
-        this.FontColor = this.settings.GetFontColorBrush();
-        this.FontFamily = this.settings.FontFamily;
-    }
-
-    private void HandleTimerTick(object sender, EventArgs e)
-    {
-        this.Date = DateTime.Now.ToLocalTime();
-    }
-
-    private void ToggleDateVisibility()
-    {
-        switch (this.DateVisibility)
-        {
-            case Visibility.Visible:
-                this.DateVisibility = Visibility.Collapsed;
-                break;
-            //case Visibility.Hidden:
-            //case Visibility.Collapsed:
-            default:
-                this.DateVisibility = Visibility.Visible;
-                break;
-        }
+        this.BackgroundColor = this.Settings.GetBackgroundColorBrush();
+        this.FontColor = this.Settings.GetFontColorBrush();
+        this.FontFamily = this.Settings.FontFamily;
     }
 }
